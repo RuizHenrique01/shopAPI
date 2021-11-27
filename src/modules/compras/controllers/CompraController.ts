@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import CreateCompraService from "../services/CreateCompraService";
 import ListCompraService from "../services/ListCompraService";
+import ShowCompraService from "../services/ShowCompraService";
 
 class CompraController {
   public async index(request: Request, response: Response): Promise<Response> {
@@ -21,6 +22,16 @@ class CompraController {
       tipo_pagamento,
       status,
     });
+
+    return response.json(compra);
+  }
+
+  public async show(request: Request, response: Response): Promise<Response> {
+    const { id } = request.params;
+
+    const showCompra = new ShowCompraService();
+
+    const compra = await showCompra.execute({ id });
 
     return response.json(compra);
   }

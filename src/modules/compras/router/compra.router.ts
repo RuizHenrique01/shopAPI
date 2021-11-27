@@ -6,6 +6,8 @@ const compraController = new CompraController();
 
 compraRouter.get("/", compraController.index);
 
+compraRouter.get("/:id", compraController.show);
+
 compraRouter.post("/", compraController.create);
 
 export default compraRouter;

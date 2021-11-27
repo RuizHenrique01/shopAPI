@@ -48,7 +48,10 @@ class CreateCompraService {
       preco: produtosExists.filter((p) => p.id === produto.id)[0].preco,
     }));
 
-    const total = 0;
+    const total = serializedProdutos.reduce(
+      (total, produto) => (total += Number(produto.preco)),
+      0
+    );
 
     const compra = await compraRepository.createCompra({
       tipo_pagamento,
