@@ -1,39 +1,39 @@
-import ComprasProdutos from "@modules/compras/typeorm/entities/ComprasProdutos";
+import Produto from "@modules/produtos/typeorm/entities/Produto";
 import {
   Column,
   CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from "typeorm";
 import { v4 as uuid } from "uuid";
+import ComprasProdutos from "./ComprasProdutos";
 
-@Entity("produtos")
-class Produto {
+@Entity("compras")
+class Compra {
   @PrimaryGeneratedColumn("uuid")
   readonly id: string;
 
   @OneToMany(
     () => ComprasProdutos,
-    (compra_produtos) => compra_produtos.produto
+    (compra_produtos) => compra_produtos.compra,
+    {
+      cascade: true,
+    }
   )
   compra_produtos: ComprasProdutos[];
 
   @Column()
-  nome: string;
+  status: string;
 
   @Column()
-  descricao: string;
+  tipo_pagamento: string;
 
   @Column("decimal")
-  preco: number;
+  total: number;
 
   @CreateDateColumn()
   data_criacao: Date;
-
-  @UpdateDateColumn()
-  data_atualizacao: Date;
 
   constructor() {
     if (!this.id) {
@@ -42,4 +42,4 @@ class Produto {
   }
 }
 
-export default Produto;
+export default Compra;

@@ -1,0 +1,64 @@
+import Compra from "../typeorm/entities/Compra";
+import { CompraRepository } from "../typeorm/repositories/CompraRepository";
+import { getCustomRepository } from "typeorm";
+import AppError from "@shared/errors/AppError";
+import { ProdutoRepository } from "@modules/produtos/typeorm/repositories/ProdutoRepository";
+
+interface IProduto {
+  id: string;
+}
+
+interface IRequest {
+  produtos: IProduto[];
+  tipo_pagamento: string;
+  status: string;
+}
+
+class CreateCompraService {
+  public async execute({
+    produtos,
+    tipo_pagamento,
+    status,
+  }: IRequest): Promise<Compra> {
+    const compraRepository = getCustomRepository(CompraRepository);
+    const produtoRepository = getCustomRepository(ProdutoRepository);
+
+    const produtosExists = await produtoRepository.findAllByIds(produtos);
+
+    if (!produtosExists.length) {
+      throw new AppError("Não foi encontrado nenhum produto");
+    }
+
+    const produtosExistsIds = produtosExists.map((produto) => produto.id);
+
+    const checkInexistentProdutos = produtos.filter(
+      (produto) => !produtosExistsIds.includes(produto.id)
+    );
+
+    if (checkInexistentProdutos.length > 0) {
+      throw new AppError(
+        `Não foi encontrado o produto ${checkInexistentProdutos[0].id}`
+      );
+    }
+
+    const serializedProdutos = produtos.map((produto) => ({
+      produto_id: produto.id,
+      nome: produtosExists.filter((p) => p.id === produto.id)[0].nome,
+      descricao: produtosExists.filter((p) => p.id === produto.id)[0].descricao,
+      preco: produtosExists.filter((p) => p.id === produto.id)[0].preco,
+    }));
+
+    const total = 0;
+
+    const compra = await compraRepository.createCompra({
+      tipo_pagamento,
+      status,
+      total,
+      produtos: serializedProdutos,
+    });
+
+    return compra;
+  }
+}
+
+export default CreateCompraService;
