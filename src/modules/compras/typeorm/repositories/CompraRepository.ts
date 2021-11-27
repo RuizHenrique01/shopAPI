@@ -25,6 +25,12 @@ export class CompraRepository extends Repository<Compra> {
     return compra;
   }
 
+  public async findCompras(): Promise<Compra[]> {
+    const compras = await this.find({ relations: ["compra_produtos"] });
+
+    return compras;
+  }
+
   public async createCompra({
     status,
     tipo_pagamento,
