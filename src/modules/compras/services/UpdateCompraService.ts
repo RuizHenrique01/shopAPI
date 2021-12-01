@@ -51,10 +51,10 @@ class UpdateCompraService {
 
     const serializedProdutos = produtos.map((produto) => ({
       produto_id: produto.id,
-      compras_id: id,
       nome: produtosExists.filter((p) => p.id === produto.id)[0].nome,
       descricao: produtosExists.filter((p) => p.id === produto.id)[0].descricao,
       preco: produtosExists.filter((p) => p.id === produto.id)[0].preco,
+      data_criacao: compraExists.compra_produtos[0].data_criacao,
     }));
 
     const total = serializedProdutos.reduce(

@@ -2,6 +2,7 @@ import Produto from "@modules/produtos/typeorm/entities/Produto";
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -34,6 +35,9 @@ class Compra {
 
   @CreateDateColumn()
   data_criacao: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   constructor() {
     if (!this.id) {

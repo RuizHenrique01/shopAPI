@@ -1,5 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
 import Compra from "../entities/Compra";
+import ComprasProdutos from "../entities/ComprasProdutos";
 
 interface IProduto {
   produto_id: string;
@@ -66,19 +67,24 @@ export class CompraRepository extends Repository<Compra> {
 
   public async updateCompra(
     id: string,
-    { status, tipo_pagamento, total, produtos }: IRequestUpdate
+    { status, tipo_pagamento, total, produtos }: IRequest
   ): Promise<Compra> {
+    const compra = await this.findOne(id, {
+      relations: ["compra_produtos"],
+    });
+
+    await this.softRemove(compra!);
+
     const newCompra = this.create({
-      id,
+      id: compra?.id,
       status,
       tipo_pagamento,
       total,
       compra_produtos: produtos,
+      data_criacao: compra?.data_criacao,
     });
 
-    console.log(newCompra);
-
-    await this.save(newCompra).catch((err) => console.log(err));
+    await this.save(newCompra);
 
     return newCompra;
   }

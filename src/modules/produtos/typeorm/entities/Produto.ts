@@ -2,6 +2,7 @@ import ComprasProdutos from "@modules/compras/typeorm/entities/ComprasProdutos";
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -16,7 +17,10 @@ class Produto {
 
   @OneToMany(
     () => ComprasProdutos,
-    (compra_produtos) => compra_produtos.produto
+    (compra_produtos) => compra_produtos.produto,
+    {
+      cascade: true,
+    }
   )
   compra_produtos: ComprasProdutos[];
 
@@ -34,6 +38,9 @@ class Produto {
 
   @UpdateDateColumn()
   data_atualizacao: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   constructor() {
     if (!this.id) {

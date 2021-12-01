@@ -17,7 +17,9 @@ class DeleteProdutoService {
       throw new AppError("Produto não encontrado!");
     }
 
-    await produtoRepository.remove(produto);
+    await produtoRepository
+      .softRemove(produto)
+      .catch((err) => console.log(err));
   }
 }
 
